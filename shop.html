@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop All - 3D Sticker Store</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  html { scroll-behavior: smooth; }
+  body {
+    background: radial-gradient(circle at top, #1a0033, #000000);
+    color: white;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .neon-text {
+    background: linear-gradient(90deg,#ff00cc,#00ccff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .neon { box-shadow: 0 0 25px rgba(255,0,200,0.3); }
+  .card { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
+  
+  .fade-up { opacity: 0; transform: translateY(20px); animation: f 0.6s ease forwards; }
+  @keyframes f { to { opacity: 1; transform: translateY(0); } }
+
+  /* Smooth Overlay for Modal */
+  #productModal.active { display: flex; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body class="font-sans">
+
+<nav class="p-6 flex justify-between items-center max-w-7xl mx-auto sticky top-0 z-50 backdrop-blur-sm">
+  <a href="code.html" class="text-xl font-bold neon-text hover:scale-105 transition-all">← Back to Home</a>
+  <div class="glass px-6 py-2 rounded-full border border-white/10 font-bold shadow-lg flex items-center gap-2">
+    <span>🛒</span> <span id="cart-count" class="text-pink-500">0</span> <span class="hidden sm:inline">Items</span>
+  </div>
+</nav>
+
+<header class="text-center py-12 fade-up">
+  <h1 class="text-5xl md:text-7xl font-black neon-text uppercase tracking-tighter">The Vault</h1>
+  <p class="text-gray-400 mt-3 text-lg max-w-2xl mx-auto">Click on any sticker to see high-resolution details and premium features.</p>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 pb-24">
+  <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+    </div>
+</main>
+
+<div id="productModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-xl">
+  <div class="glass max-w-4xl w-full rounded-[40px] border border-white/20 overflow-hidden flex flex-col md:flex-row relative fade-up">
+    <button onclick="closeModal()" class="absolute top-6 right-6 text-white/50 hover:text-white text-4xl z-50 transition-all">&times;</button>
+    
+    <div class="md:w-1/2 bg-white/5 p-8 flex items-center justify-center">
+      <img id="modalImg" src="" class="w-full h-auto object-contain drop-shadow-[0_0_40px_rgba(255,0,200,0.4)] transition-all duration-700" alt="Product">
+    </div>
+    
+    <div class="md:w-1/2 p-10 flex flex-col justify-center">
+      <div class="text-pink-500 text-xs font-bold tracking-[0.2em] mb-2 uppercase">Premium Collection</div>
+      <h2 id="modalName" class="text-4xl font-black text-white leading-tight"></h2>
+      <p id="modalPrice" class="text-3xl font-bold text-blue-400 mt-4"></p>
+      
+      <div class="mt-8 space-y-4 text-gray-400">
+        <div class="flex items-center gap-3">
+          <span class="bg-pink-500/20 p-1 rounded-full text-pink-500 text-[10px]">✔</span> 
+          <span>High-Fidelity 3D Texture (4K)</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="bg-pink-500/20 p-1 rounded-full text-pink-500 text-[10px]">✔</span> 
+          <span>Transparent PNG Format</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="bg-pink-500/20 p-1 rounded-full text-pink-500 text-[10px]">✔</span> 
+          <span>Commercial Use License</span>
+        </div>
+      </div>
+
+      <button onclick="updateCount(event); closeModal();" class="mt-10 w-full bg-gradient-to-r from-pink-600 to-blue-600 py-4 rounded-2xl font-bold text-xl hover:scale-105 transition active:scale-95 shadow-[0_0_30px_rgba(219,39,119,0.3)]">
+        Add To Cart
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const stickers = [
+    { name: "Ghosty Bat Cupcake", price: 5, img: "h1.png" },
+    { name: "Mushroom Spooky Cat", price: 6, img: "h2.png" },
+    { name: "Skull Cream Dessert", price: 5, img: "h3.png" },
+    { name: "Magical Flying Pig", price: 7, img: "h4.png" },
+    { name: "Mirror Ghost Soul", price: 8, img: "h5.png" },
+    { name: "Tiny Reaper Bat", price: 5, img: "h6.png" },
+    { name: "Toxic Slime Potion", price: 6, img: "h7.png" },
+    { name: "Cursed Coffin Box", price: 9, img: "h8.png" },
+    { name: "Green Spooky Potion", price: 6, img: "h9.png" },
+    { name: "Shadow Lantern Spirit", price: 7, img: "h10.png" },
+    { name: "Grim Bat Lord", price: 8, img: "h11.png" },
+    { name: "Crystal Guardian Bat", price: 7, img: "h12.png" }
+  ];
+
+  function renderProducts() {
+    const grid = document.getElementById('product-grid');
+    grid.innerHTML = stickers.map((s, index) => `
+      <div class="glass neon p-5 rounded-[32px] card fade-up border border-white/10 group cursor-pointer" 
+           style="animation-delay: ${index * 0.05}s"
+           onmousemove="tilt(event, this)" 
+           onmouseleave="resetTilt(this)"
+           onclick="openModal('${s.name}', ${s.price}, '${s.img}')">
+        <div class="relative overflow-hidden rounded-2xl">
+          <img src="images/halloween/${s.img}" class="w-full h-52 object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-2xl" 
+               alt="${s.name}" onerror="this.src='https://via.placeholder.com/200?text=Image+Missing'">
+          <div class="absolute inset-0 bg-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        </div>
+        <h3 class="mt-6 text-xl font-bold text-white group-hover:text-pink-300 transition-colors">${s.name}</h3>
+        <div class="mt-2 flex justify-between items-center">
+            <p class="text-blue-400 font-black text-xl">$${s.price}</p>
+            <span class="text-xs text-gray-500 font-bold uppercase tracking-widest">Details →</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Modal Logic
+  function openModal(name, price, img) {
+    document.getElementById('modalName').innerText = name;
+    document.getElementById('modalPrice').innerText = '$' + price;
+    document.getElementById('modalImg').src = 'images/halloween/' + img;
+    const modal = document.getElementById('productModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('productModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+
+  let count = 0;
+  function updateCount(e) {
+    e.stopPropagation(); // Prevents opening modal when clicking the card button if you add one later
+    count++;
+    document.getElementById('cart-count').innerText = count;
+  }
+
+  // 3D Mouse Tilt Logic
+  function tilt(e, el) {
+    const r = el.getBoundingClientRect();
+    const rx = (((e.clientY - r.top) / r.height) - 0.5) * -15;
+    const ry = (((e.clientX - r.left) / r.width) - 0.5) * 15;
+    el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
+  }
+
+  function resetTilt(el) {
+    el.style.transform = "rotateX(0) rotateY(0) scale(1)";
+  }
+
+  renderProducts();
+</script>
+
+</body>
+</html>

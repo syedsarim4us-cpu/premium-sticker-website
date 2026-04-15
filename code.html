@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate 3D Sticker Store - Halloween Edition</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body {
+    background: radial-gradient(circle at top, #1a0033, #000000);
+    color: white;
+    min-height: 100vh;
+    font-family: sans-serif;
+    overflow-x: hidden;
+  }
+  .glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .neon { box-shadow: 0 0 20px rgba(255,0,200,0.4), 0 0 40px rgba(0,150,255,0.2); }
+  .neon-text {
+    background: linear-gradient(90deg,#ff00cc,#00ccff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .grid { perspective: 1000px; }
+  .card { transition: transform 0.15s ease; transform-style: preserve-3d; }
+  .fade-up {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeUp 0.8s ease forwards;
+  }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body class="text-white font-sans">
+
+<div class="fixed top-4 right-4 z-50">
+  <a href="contact.html" class="px-6 py-2 glass rounded-full font-bold border border-white/10 hover:bg-white/10 transition-all shadow-lg">
+    Contact
+  </a>
+</div>
+
+<section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+  <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-pink-600/20 blur-[120px] rounded-full animate-pulse"></div>
+  <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/20 blur-[120px] rounded-full animate-pulse" style="animation-delay: 2s;"></div>
+
+  <div class="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center z-10">
+    <div class="text-left fade-up">
+      <div class="inline-block px-4 py-1 rounded-full glass border border-pink-500/30 text-pink-400 text-sm font-bold mb-6 tracking-widest uppercase">
+        Next-Gen 3D Collectibles
+      </div>
+      <h1 class="text-5xl md:text-7xl font-black leading-tight">
+        Step Into The <br>
+        <span class="neon-text">Neo-Spooky</span> <br>
+        Universe.
+      </h1>
+      <p class="mt-6 text-gray-400 text-lg max-w-xl leading-relaxed">
+        Experience the world's most premium 3D Halloween assets. High-fidelity textures and handcrafted digital art.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-4">
+        <button onclick="window.location.href='shop.html'" class="px-10 py-5 bg-gradient-to-r from-pink-600 to-blue-600 rounded-2xl font-bold text-xl hover:scale-105 transition-all shadow-[0_0_30px_rgba(219,39,119,0.4)]">
+          Explore Shop
+        </button>
+        <a href="#about" class="px-10 py-5 glass border border-white/10 rounded-2xl font-bold text-xl hover:bg-white/5 transition-all inline-block text-center">
+          Our Story
+        </a>
+      </div>
+    </div>
+
+    <div class="hidden lg:flex justify-center items-center relative fade-up" style="animation-delay: 0.3s;">
+      <div class="w-[400px] h-[400px] glass neon rounded-[40px] flex items-center justify-center relative z-20 border border-white/10 group" 
+           onmousemove="tilt(event, this)" onmouseleave="resetTilt(this)">
+        <img src="images/halloween/h11.png" class="w-72 h-72 object-contain drop-shadow-[0_0_50px_rgba(255,0,200,0.5)] transition-transform duration-700 group-hover:scale-110" alt="Hero Asset">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="products" class="p-10 max-w-7xl mx-auto py-20">
+  <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
+    <h2 class="text-4xl font-bold neon-text">Featured Collection</h2>
+    <button onclick="window.location.href='shop.html'" class="text-pink-400 font-bold hover:underline">View All Products →</button>
+  </div>
+  
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <script>
+      const stickers = [
+        { name: "Ghosty Bat Cupcake", price: 5, img: "h1.png" },
+        { name: "Mushroom Spooky Cat", price: 6, img: "h2.png" },
+        { name: "Skull Cream Dessert", price: 5, img: "h3.png" },
+        { name: "Magical Flying Pig", price: 7, img: "h4.png" }
+      ];
+
+      document.write(stickers.map(s => `
+        <div class="glass neon p-5 rounded-3xl card fade-up border border-white/10" onmousemove="tilt(event,this)" onmouseleave="resetTilt(this)">
+          <div class="relative group">
+            <img src="images/halloween/${s.img}" class="rounded-2xl w-full h-48 object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-110" alt="${s.name}" onerror="this.src='https://via.placeholder.com/200?text=3D+Asset'">
+            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-2xl">
+               <a href="product-details.html" class="bg-white text-black px-4 py-2 rounded-full text-xs font-bold uppercase tracking-tighter">View Details</a>
+            </div>
+          </div>
+          <h3 class="mt-4 text-xl font-semibold text-pink-300">${s.name}</h3>
+          <p class="text-blue-400 font-bold text-lg">$${s.price}</p>
+          <button onclick="addToCart('${s.name}',${s.price})" class="mt-4 w-full bg-gradient-to-r from-pink-600 to-blue-600 hover:from-pink-500 hover:to-blue-500 py-3 rounded-xl font-bold transition-all active:scale-95 shadow-lg">
+            Add to Cart
+          </button>
+        </div>
+      `).join(''));
+    </script>
+  </div>
+</section>
+
+<section id="about" class="py-20 max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12 fade-up" style="scroll-margin-top: 80px;">
+  <div class="flex-1 glass neon p-10 rounded-3xl border border-white/10">
+    <h2 class="text-4xl font-bold mb-6 neon-text">Behind the Magic 🔮</h2>
+    <p class="text-gray-300 text-lg leading-relaxed">
+      Welcome to the dark side of creativity. Our studio specializes in high-fidelity 3D digital art. Every sticker is meticulously rendered to ensure premium quality. We bring the spooky universe to your digital collection and clothing designs.
+    </p>
+  </div>
+  <div class="flex-1 flex justify-center">
+    <div class="w-64 h-64 glass neon rounded-full flex items-center justify-center animate-bounce border border-white/10 shadow-[0_0_50px_rgba(255,0,204,0.3)]">
+      <span class="text-8xl">💀</span>
+    </div>
+  </div>
+</section>
+
+<section id="cart-section" class="p-10 max-w-4xl mx-auto">
+  <h2 class="text-3xl font-bold mb-6 text-pink-400">Your Shopping Cart 🛒</h2>
+  <div id="cart" class="glass neon p-8 rounded-2xl border border-white/10 min-h-[100px] flex flex-col gap-3">
+    <p class="text-gray-400">Your cart is currently empty...</p>
+  </div>
+</section>
+
+<footer class="p-10 text-center text-gray-500 border-t border-white/5 mt-20">
+  <p>© 2026 Premium 3D Stickers Store. All rights reserved.</p>
+</footer>
+
+<script>
+let cart = [];
+function addToCart(name, price){ cart.push({name, price}); renderCart(); }
+
+function renderCart(){
+  const c = document.getElementById('cart');
+  if(cart.length === 0){
+    c.innerHTML = '<p class="text-gray-400">Your cart is currently empty...</p>';
+  } else {
+    c.innerHTML = cart.map((i) => `<div class="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/5"><span>${i.name}</span><span class="text-pink-400 font-bold">$${i.price}</span></div>`).join('');
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    c.innerHTML += `<div class="mt-4 pt-4 border-t border-white/20 flex justify-between items-center"><span class="text-xl font-bold">Total:</span><span class="text-2xl font-bold text-green-400">$${total}</span></div><button class="mt-4 w-full bg-green-500 py-3 rounded-xl font-bold hover:bg-green-400 transition">Checkout Now</button>`;
+  }
+}
+
+function tilt(e, el){
+  const r = el.getBoundingClientRect();
+  const rx = (((e.clientY - r.top) / r.height) - 0.5) * -15;
+  const ry = (((e.clientX - r.left) / r.width) - 0.5) * 15;
+  el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
+}
+function resetTilt(el){ el.style.transform = "rotateX(0) rotateY(0) scale(1)"; }
+</script>
+</body>
+</html>
